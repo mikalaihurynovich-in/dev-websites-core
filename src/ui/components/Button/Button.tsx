@@ -16,9 +16,13 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        'solid': 'rounded-btn bg-accent text-accent-foreground hover:opacity-90',
+        // Fill uses `--btn-primary-*` (accent fallback). Label keeps
+        // `text-accent-foreground` so QVAC’s tailwind override
+        // (`--color-text-on-action`) is unchanged; Pear already maps
+        // accent.foreground → ink.
+        'solid': 'rounded-btn bg-btn text-accent-foreground hover:opacity-90',
         'outline':
-          'rounded-btn border border-accent bg-transparent text-foreground hover:bg-foreground/5',
+          'rounded-btn border border-btn-secondary-border bg-transparent text-foreground hover:border-accent hover:bg-foreground/5',
         'ghost': 'rounded-btn bg-transparent text-accent hover:bg-foreground/5',
         'secondary':
           'rounded-btn border border-foreground/20 bg-foreground/5 text-foreground hover:bg-foreground/10',

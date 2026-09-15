@@ -1,6 +1,6 @@
 {
   "name": "@tetherto/dev-websites-core",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "Shared CMS, SEO, i18n, utils, UI, and analytics primitives for the WDK / QVAC / PEAR / MDK websites.",
   "license": "Apache-2.0",
   "publishConfig": {

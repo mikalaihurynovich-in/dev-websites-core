@@ -35,7 +35,7 @@ function Input({ className, error, leftIcon, rightIcon, id, ref, ...props }: Inp
           aria-invalid={hasError || undefined}
           aria-describedby={hasError && errorId ? errorId : undefined}
           className={cn(
-            'h-11 w-full rounded-btn border border-border-subtle bg-background px-3.5 text-sm text-foreground',
+            'h-11 w-full rounded-btn border border-control-border bg-background px-3.5 text-sm text-foreground',
             'placeholder:text-muted',
             'transition-colors hover:border-border',
             'focus-visible:border-accent focus-visible:outline-none',

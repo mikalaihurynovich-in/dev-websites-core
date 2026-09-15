@@ -13,10 +13,17 @@
  *
  * CSS: define the `--color-*` / `--primitive-*` / `--btn-*` vars the preset
  * references (see WDK `globals.css`), or remap them in the app `:root`.
+ *
+ * Button fills/borders prefer `--btn-primary-*` / `--btn-secondary-*` and fall
+ * back to `--color-accent` so sites that only set accent keep today’s look.
+ * Override those `--btn-*` vars (e.g. Pear outline = gray) without forking Button.
  */
 
 const hsl = (name: string) => `hsl(var(${name}) / <alpha-value>)`
 const cssVar = (name: string) => `var(${name})`
+/** HSL channel var with fallback channel var (both unwrapped). */
+const hslFallback = (name: string, fallback: string) =>
+  `hsl(var(${name}, var(${fallback})) / <alpha-value>)`
 
 const preset = {
   theme: {
@@ -41,6 +48,29 @@ const preset = {
           hover: hsl('--color-accent-hover'),
           dim: hsl('--color-accent-dim'),
         },
+
+        /**
+         * Solid CTA fill. Defaults to accent when `--btn-primary-*` are unset
+         * (QVAC) or alias accent (WDK/MDK).
+         */
+        'btn': {
+          DEFAULT: hslFallback('--btn-primary-bg', '--color-accent'),
+          hover: hslFallback('--btn-primary-bg-hover', '--color-accent-hover'),
+          foreground: hslFallback('--btn-primary-text', '--color-text-primary'),
+        },
+        /** Outline CTA border/text. Defaults to accent border + primary text. */
+        'btn-secondary': {
+          border: hslFallback('--btn-secondary-border', '--color-accent'),
+          DEFAULT: hslFallback('--btn-secondary-text', '--color-text-primary'),
+        },
+        /**
+         * Form control stroke. Defaults to border-subtle (current Input/Textarea).
+         * Set `--control-border` to remap without CSS attribute overrides.
+         */
+        'control': {
+          border: hslFallback('--control-border', '--color-border-subtle'),
+        },
+
         'border': {
           DEFAULT: hsl('--color-border-default'),
           subtle: hsl('--color-border-subtle'),
@@ -104,6 +134,10 @@ const preset = {
       },
 
       borderRadius: {
+        // Keep 5px default (current WDK/MDK render). Apps override via
+        // theme.extend.borderRadius.btn (QVAC / Pear) — do not read
+        // `--btn-primary-radius` here so WDK’s declared 4px token does not
+        // silently change live buttons from 5px → 4px.
         btn: '5px',
         card: '10px',
         badge: '5px',

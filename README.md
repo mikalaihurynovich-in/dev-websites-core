@@ -106,6 +106,12 @@ Apps define the CSS variables the preset references (`--color-bg-base`,
 `globals.css`. Product-only utilities (e.g. QVAC `text-heading`) stay in the
 app config until migrated onto the shared names.
 
+**Button / form theming (optional):** `solid` fill reads `--btn-primary-bg`
+(fallback: accent); label stays `text-accent-foreground` so per-site accent
+foreground overrides (e.g. QVAC on-action) keep working. `outline` border
+reads `--btn-secondary-border` (fallback: accent). Input/Textarea borders
+read `--control-border` (fallback: `--color-border-subtle`).
+
 Optional CSS helpers: `ui/theme/tokens.css`, `ui/theme/preset.css`, `ui/theme.css`
 (short-name contract / Tailwind v4 `@theme`). The JS preset above is the source
 of truth for WDK/QVAC.
