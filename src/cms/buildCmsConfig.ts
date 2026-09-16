@@ -7,6 +7,8 @@ import { createBlogPosts } from './collections/createBlogPosts.js'
 import { createCategories } from './collections/createCategories.js'
 import { createChangelog } from './collections/createChangelog.js'
 import { createChangelogTags } from './collections/createChangelogTags.js'
+import { createEventTags } from './collections/createEventTags.js'
+import { createEvents } from './collections/createEvents.js'
 import { createMedia } from './collections/createMedia.js'
 import { createLegalPages, createPages } from './collections/createPages.js'
 import { createUsers } from './collections/createUsers.js'
@@ -87,6 +89,8 @@ export function buildCmsConfig<const TLocale extends string>(
     'legal-pages': createLegalPages(access),
     'changelog-tags': createChangelogTags(access),
     'changelog': createChangelog(access),
+    'event-tags': createEventTags(access),
+    'events': createEvents(access),
   }
 
   const collections = [

@@ -12,6 +12,8 @@ export const STOCK_COLLECTION_SLUGS = [
   'legal-pages',
   'changelog-tags',
   'changelog',
+  'event-tags',
+  'events',
 ] as const
 
 export type StockCollectionSlug = (typeof STOCK_COLLECTION_SLUGS)[number]
