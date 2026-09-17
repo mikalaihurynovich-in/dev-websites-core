@@ -98,9 +98,16 @@ export function buildCmsConfig<const TLocale extends string>(
 
   const siteSettings = applyGlobalOverride(createSiteSettings(access), overrides['site-settings'])
   const globals = [...(siteSettings ? [siteSettings] : []), ...(options.extraGlobals ?? [])]
+  const { jobs: jobsOverride, ...payloadRest } = options.payload ?? {}
 
   return buildConfig({
-    ...options.payload,
+    ...payloadRest,
+    jobs: {
+      // In-process cron so Payload `schedulePublish` jobs actually run.
+      // Override via `payload.jobs`. Do not use on serverless hosts.
+      autoRun: [{ cron: '* * * * *' }],
+      ...jobsOverride,
+    },
     ...defined({
       sharp: options.sharp,
       cors: options.cors,
