@@ -7,12 +7,13 @@ import type { CollectionConfig } from 'payload'
 export function createEventTags(access: AccessHelpers): CollectionConfig {
   return {
     slug: 'event-tags',
+    labels: { singular: 'Event Tag', plural: 'Event Tags' },
     defaultSort: 'order',
     admin: {
       useAsTitle: 'name',
       defaultColumns: ['name', 'slug', 'order'],
       description:
-        'Reusable event categories (Meetup, Workshop, Hackathon, …). Editors can add types without code changes.',
+        'Reusable event categories (Meetup, Workshop, Hackathon, …). Editors can add types without code changes. Related from Events.',
     },
     access: {
       read: access.publicRead,

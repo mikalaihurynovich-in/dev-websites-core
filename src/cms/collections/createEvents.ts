@@ -4,7 +4,85 @@ import { richTextEditor } from '../lexical/editor.js'
 import { draftsWithAutosave } from '../shared/drafts-with-autosave.js'
 
 import type { AccessHelpers } from '../shared/access.js'
-import type { CollectionConfig } from 'payload'
+import type { CollectionConfig, Validate } from 'payload'
+
+/**
+ * Display abbreviations accepted in addition to IANA names (e.g. Europe/Paris).
+ * Sites map these to IANA when they need a timezone database identifier.
+ */
+const TIMEZONE_ABBREVIATIONS = new Set([
+  'UTC',
+  'GMT',
+  'CET',
+  'CEST',
+  'WET',
+  'WEST',
+  'EET',
+  'EEST',
+  'BST',
+  'EST',
+  'EDT',
+  'CST',
+  'CDT',
+  'MST',
+  'MDT',
+  'PST',
+  'PDT',
+])
+
+function parseDate(value: unknown): Date | null {
+  if (value instanceof Date) {
+    return Number.isNaN(value.getTime()) ? null : value
+  }
+  if (typeof value === 'string' && value.trim()) {
+    const date = new Date(value)
+    return Number.isNaN(date.getTime()) ? null : date
+  }
+  return null
+}
+
+function isValidIanaTimeZone(timeZone: string): boolean {
+  try {
+    Intl.DateTimeFormat('en-US', { timeZone }).format(new Date())
+    return true
+  } catch {
+    return false
+  }
+}
+
+const validateTimezone: Validate<string | null | undefined> = (value) => {
+  if (!value || !value.trim()) return 'Timezone is required.'
+  const timeZone = value.trim()
+  if (TIMEZONE_ABBREVIATIONS.has(timeZone.toUpperCase())) return true
+  if (isValidIanaTimeZone(timeZone)) return true
+  return 'Must be a timezone abbreviation (CET, UTC, …) or a valid IANA timezone (e.g. Europe/Paris).'
+}
+
+const validateExternalUrl: Validate<string | null | undefined> = (value) => {
+  if (!value || !value.trim()) return 'External URL is required.'
+  try {
+    new URL(value)
+    return true
+  } catch {
+    return 'Must be a valid URL (e.g. https://example.com/event).'
+  }
+}
+
+const validateEndsAt: Validate<string | Date | null | undefined> = (value, { siblingData }) => {
+  const end = parseDate(value)
+  if (!end) return 'End date and time is required.'
+
+  const start = parseDate(
+    siblingData && typeof siblingData === 'object' && 'startsAt' in siblingData
+      ? siblingData.startsAt
+      : undefined
+  )
+  if (start && end.getTime() <= start.getTime()) {
+    return 'End date and time must be after the start.'
+  }
+
+  return true
+}
 
 /**
  * Stock events collection (shared fields only).
@@ -18,7 +96,7 @@ export function createEvents(access: AccessHelpers): CollectionConfig {
     defaultSort: 'startsAt',
     admin: {
       useAsTitle: 'title',
-      defaultColumns: ['title', 'slug', 'tag', 'startsAt', '_status'],
+      defaultColumns: ['title', 'slug', 'tag', 'startsAt', 'endsAt', '_status'],
       description: 'Reusable events consumed by marketing / community surfaces across sites.',
     },
     access: {
@@ -55,7 +133,15 @@ export function createEvents(access: AccessHelpers): CollectionConfig {
         required: true,
         localized: true,
         admin: {
-          description: 'Short description for listings and previews.',
+          description: 'Short description for listings, previews, and calendar bodies.',
+        },
+      },
+      {
+        name: 'coverImage',
+        type: 'upload',
+        relationTo: 'media',
+        admin: {
+          description: 'Optional cover/hero image for detail or promotional surfaces.',
         },
       },
       {
@@ -69,21 +155,34 @@ export function createEvents(access: AccessHelpers): CollectionConfig {
         },
       },
       {
-        name: 'location',
-        type: 'text',
+        name: 'endsAt',
+        type: 'date',
         required: true,
-        localized: true,
+        validate: validateEndsAt,
         admin: {
-          description: 'Venue or platform (e.g. Discord, Online, Lisbon).',
+          position: 'sidebar',
+          date: { pickerAppearance: 'dayAndTime', displayFormat: 'MMM d, yyyy h:mm a' },
+          description: 'Event end date and time. Must be after the start.',
         },
       },
       {
         name: 'timezone',
         type: 'text',
         required: true,
+        validate: validateTimezone,
         admin: {
           position: 'sidebar',
-          description: 'Timezone abbreviation for display (e.g. CET, WET).',
+          description:
+            'Display timezone: abbreviation (CET, WET, UTC) or IANA name (Europe/Paris).',
+        },
+      },
+      {
+        name: 'location',
+        type: 'text',
+        required: true,
+        localized: true,
+        admin: {
+          description: 'Venue or platform (e.g. Discord, Online, Lisbon).',
         },
       },
       {
@@ -97,28 +196,37 @@ export function createEvents(access: AccessHelpers): CollectionConfig {
         },
       },
       {
+        name: 'ctaKind',
+        type: 'select',
+        required: true,
+        defaultValue: 'link',
+        options: [
+          { label: 'External link', value: 'link' },
+          { label: 'Add to calendar', value: 'calendar' },
+        ],
+        admin: {
+          position: 'sidebar',
+          description:
+            'Primary listing action. Link opens the external URL; calendar lets the site offer an add-to-calendar flow.',
+        },
+      },
+      {
         name: 'ctaLabel',
         type: 'text',
         required: true,
         localized: true,
         admin: {
-          description: 'Label for the primary external action (e.g. Register, Watch recording).',
+          description: 'Label for the primary listing action (e.g. Register, Watch recording).',
         },
       },
       {
         name: 'ctaUrl',
         type: 'text',
         required: true,
+        validate: validateExternalUrl,
         admin: {
-          description: 'External URL for the primary action.',
-        },
-      },
-      {
-        name: 'coverImage',
-        type: 'upload',
-        relationTo: 'media',
-        admin: {
-          description: 'Optional cover/hero image for detail or promotional surfaces.',
+          description:
+            'External event URL. Opened for link actions; included in calendar details for calendar actions.',
         },
       },
       {

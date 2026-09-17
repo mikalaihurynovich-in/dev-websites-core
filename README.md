@@ -133,8 +133,8 @@ Registered by `buildCmsConfig` in this order. Disable or extend any of them via
 | `legal-pages`    | collection | Legal/policy content pages (same shape as `pages`).                                                               |
 | `changelog-tags` | collection | Editor-managed tags shown on changelog entries.                                                                   |
 | `changelog`      | collection | Changelog entries — **shared fields only** (see below).                                                           |
-| `event-tags`     | collection | Editor-managed event categories (Meetup, Workshop, Hackathon, …).                                                 |
-| `events`         | collection | Events — drafts + autosave, tag relation, optional cover/body (SEO via site overrides when needed).               |
+| `event-tags`     | collection | Editor-managed event categories (Meetup, Workshop, Hackathon, …). Related from `events`.                          |
+| `events`         | collection | Events — drafts + autosave, start/end, timezone, location, tag, external URL, optional cover/body.                |
 | `site-settings`  | global     | Site name, default description/OG image, organization + social.                                                   |
 
 Changelog stock ships shared fields only; site-specific body / GitHub /
