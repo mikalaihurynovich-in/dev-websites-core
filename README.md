@@ -142,6 +142,11 @@ Changelog stock ships shared fields only; site-specific body / GitHub /
 `overrides.hooks` (site-owned, e.g. `src/lib/cache`) — hook arrays are **appended**
 to stock hooks, not replaced.
 
+Draft collections enable Payload `schedulePublish`. `buildCmsConfig` starts
+`jobs.autoRun` every minute so scheduled publishes run in a long-lived Node
+process (`next start` / Docker). Override or disable via `payload.jobs`. This
+is not for serverless hosts.
+
 ### Peer dependencies
 
 CMS / Next (required for `/cms` consumers):
