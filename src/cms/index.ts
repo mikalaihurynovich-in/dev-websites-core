@@ -11,7 +11,12 @@ export type { AccessHelpers, AccessOptions } from './shared/access.js'
 export { draftsWithAutosave } from './shared/drafts-with-autosave.js'
 export { seoFields } from './shared/seo-fields.js'
 
-export { slugify, setPublishedAt } from './hooks/index.js'
+export {
+  slugify,
+  setPublishedAt,
+  coerceBlogPostCategoriesOnRead,
+  coerceBlogPostCategoriesOnWrite,
+} from './hooks/index.js'
 
 export {
   blogContentBlocks,

@@ -1,4 +1,8 @@
 import { blogContentBlocks } from '../blocks/index.js'
+import {
+  coerceBlogPostCategoriesOnRead,
+  coerceBlogPostCategoriesOnWrite,
+} from '../hooks/coerce-blog-post-categories.js'
 import { setPublishedAt } from '../hooks/set-published-at.js'
 import { slugify } from '../hooks/slugify.js'
 import { draftsWithAutosave } from '../shared/drafts-with-autosave.js'
@@ -24,7 +28,8 @@ export function createBlogPosts(access: AccessHelpers): CollectionConfig {
     },
     versions: draftsWithAutosave,
     hooks: {
-      beforeChange: [setPublishedAt],
+      beforeChange: [setPublishedAt, coerceBlogPostCategoriesOnWrite],
+      afterRead: [coerceBlogPostCategoriesOnRead],
     },
     fields: [
       {
@@ -82,6 +87,8 @@ export function createBlogPosts(access: AccessHelpers): CollectionConfig {
         name: 'category',
         type: 'relationship',
         relationTo: 'categories',
+        hasMany: true,
+        label: 'Categories',
         admin: { position: 'sidebar' },
       },
       {
