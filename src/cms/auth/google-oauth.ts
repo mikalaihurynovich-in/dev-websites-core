@@ -17,7 +17,7 @@ export const GOOGLE_OAUTH_ADMIN_PATH = '/admin'
 
 /** Payload `admin.components.afterLogin` path for the shared Google button. */
 export const GOOGLE_OAUTH_AFTER_LOGIN = [
-  '@tetherto/dev-websites-core/ui#GoogleOAuthButton',
+  '@tetherto/dev-websites-core/ui/google-oauth#GoogleOAuthButton',
 ] as const
 
 export const GOOGLE_OAUTH_SCOPES = ['openid', 'email', 'profile'] as const

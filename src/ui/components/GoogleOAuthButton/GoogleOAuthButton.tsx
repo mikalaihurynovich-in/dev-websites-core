@@ -1,6 +1,6 @@
 'use client'
 
-import { useSearchParams } from 'next/navigation'
+import { useSearchParams } from 'next/navigation.js'
 import { useEffect } from 'react'
 
 import { Button } from '../Button/Button.js'
@@ -21,19 +21,27 @@ export function GoogleOAuthButton() {
   }
 
   return (
-    <form className="google-oauth-container">
-      <div className="form-submit">
-        <div className="google-oauth-divider" role="separator">
-          <span className="google-oauth-divider__line" aria-hidden="true" />
-          <span className="google-oauth-divider__label">Or</span>
-          <span className="google-oauth-divider__line" aria-hidden="true" />
+    <form className="w-full">
+      <div className="form-submit flex w-full flex-col items-stretch">
+        <div className="my-3 flex w-full items-center gap-3" role="separator">
+          <span
+            className="block h-px min-w-0 flex-1 bg-[var(--theme-elevation-250,#cfcfcf)]"
+            aria-hidden="true"
+          />
+          <span className="shrink-0 text-center text-[13px] leading-none font-normal tracking-normal whitespace-nowrap text-[var(--theme-elevation-500,#8c8c8c)]">
+            Or
+          </span>
+          <span
+            className="block h-px min-w-0 flex-1 bg-[var(--theme-elevation-250,#cfcfcf)]"
+            aria-hidden="true"
+          />
         </div>
         <Button
           type="button"
           onClick={handleGoogleLogin}
-          className="google-oauth-button btn btn--icon-style-without-border btn--size-large btn--withoutPopup btn--style-primary btn--no-margin"
+          className="btn btn--icon-style-without-border btn--size-large btn--withoutPopup btn--style-primary !my-0"
         >
-          <svg width="18" height="18" viewBox="0 0 18 18" style={{ marginRight: '8px' }}>
+          <svg className="mr-2 size-[18px] shrink-0" viewBox="0 0 18 18" aria-hidden="true">
             <path
               fill="#4285F4"
               d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z"

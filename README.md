@@ -11,13 +11,13 @@ Shared CMS, SEO, i18n, utils, UI, and analytics primitives for WDK / QVAC / PEAR
 | `@tetherto/dev-websites-core/utils` | `createLogger`, `toPlainValue`, `stripShikiPreBackground` |
 | `@tetherto/dev-websites-core/analytics` | `GtmLoader`, `createTrackedLink` (optional `@next/third-parties` peer) |
 | `@tetherto/dev-websites-core/ui` | UI primitives (`Button`, `Dialog`, `Pagination`, `Tooltip`, …) + `cn` |
+| `@tetherto/dev-websites-core/ui/google-oauth` | Payload `GoogleOAuthButton` (Tailwind classes; source `dist` from Payload CSS) |
 | `@tetherto/dev-websites-core/ui/a11y` | `focusRingClassName`, `VisuallyHidden` |
 | `@tetherto/dev-websites-core/ui/carousel` | `Carousel` (+ optional `embla-carousel-react` peer) |
 | `@tetherto/dev-websites-core/ui/theme.css` | One-shot: tokens + Tailwind v4 `@theme` preset |
 | `@tetherto/dev-websites-core/ui/theme/tokens.css` | CSS variables (HSL channels) |
 | `@tetherto/dev-websites-core/ui/theme/preset.css` | Tailwind v4 `@theme` map |
 | `@tetherto/dev-websites-core/ui/theme/preset` | JS Tailwind preset for `tailwind.config.ts` |
-| `@tetherto/dev-websites-core/ui/google-oauth.css` | Payload admin styles for the Google login button |
 
 ### Install
 
@@ -85,8 +85,21 @@ export function GET(request: NextRequest) {
 ```
 
 ```css
-/* src/app/(payload)/custom.css */
-@import '@tetherto/dev-websites-core/ui/google-oauth.css';
+/* src/app/(payload)/custom.css — utilities only; do not import Tailwind preflight */
+@import 'tailwindcss/theme.css' layer(theme) source(none);
+@import 'tailwindcss/utilities.css' layer(utilities) source(none);
+@source '../../../node_modules/@tetherto/dev-websites-core/src/ui/components/GoogleOAuthButton';
+
+.login__form > .form-submit .btn {
+  margin-bottom: 0;
+}
+```
+
+Apps using Next.js should also transpile the package so the Payload button shares the app React instance:
+
+```ts
+// next.config.ts
+transpilePackages: ['@tetherto/dev-websites-core']
 ```
 
 Env: `GOOGLE_OAUTH_CLIENT_ID`, `GOOGLE_OAUTH_CLIENT_SECRET`. Redirect URI:

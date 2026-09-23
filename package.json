@@ -58,6 +58,11 @@
       "import": "./dist/ui/index.mjs",
       "default": "./dist/ui/index.mjs"
     },
+    "./ui/google-oauth": {
+      "types": "./dist/ui/components/GoogleOAuthButton/index.d.mts",
+      "import": "./dist/ui/components/GoogleOAuthButton/index.mjs",
+      "default": "./dist/ui/components/GoogleOAuthButton/index.mjs"
+    },
     "./ui/a11y": {
       "types": "./dist/ui/a11y/index.d.mts",
       "import": "./dist/ui/a11y/index.mjs",
@@ -72,13 +77,12 @@
     "./ui/theme/tokens.css": "./src/ui/theme/tokens.css",
     "./ui/theme/preset.css": "./src/ui/theme/preset.css",
     "./ui/theme/preset": "./src/ui/theme/preset.ts",
-    "./ui/google-oauth.css": "./src/ui/google-oauth.css",
     "./package.json": "./package.json"
   },
   "files": [
     "dist",
     "src/ui/theme",
-    "src/ui/google-oauth.css"
+    "src/ui/components/GoogleOAuthButton"
   ],
   "scripts": {
     "build": "tsdown",
