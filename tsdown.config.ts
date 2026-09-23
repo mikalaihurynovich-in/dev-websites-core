@@ -34,6 +34,7 @@ export default defineConfig([
     entry: {
       'index': 'src/index.ts',
       'cms/index': 'src/cms/index.ts',
+      'cms/google-oauth': 'src/cms/auth/google-oauth.ts',
       'seo/index': 'src/seo/index.ts',
       'i18n/index': 'src/i18n/index.ts',
       'utils/index': 'src/utils/index.ts',

@@ -28,6 +28,11 @@
       "import": "./dist/cms/index.mjs",
       "default": "./dist/cms/index.mjs"
     },
+    "./cms/google-oauth": {
+      "types": "./dist/cms/google-oauth.d.mts",
+      "import": "./dist/cms/google-oauth.mjs",
+      "default": "./dist/cms/google-oauth.mjs"
+    },
     "./seo": {
       "types": "./dist/seo/index.d.mts",
       "import": "./dist/seo/index.mjs",
@@ -67,11 +72,13 @@
     "./ui/theme/tokens.css": "./src/ui/theme/tokens.css",
     "./ui/theme/preset.css": "./src/ui/theme/preset.css",
     "./ui/theme/preset": "./src/ui/theme/preset.ts",
+    "./ui/google-oauth.css": "./src/ui/google-oauth.css",
     "./package.json": "./package.json"
   },
   "files": [
     "dist",
-    "src/ui/theme"
+    "src/ui/theme",
+    "src/ui/google-oauth.css"
   ],
   "scripts": {
     "build": "tsdown",
@@ -99,6 +106,7 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
     "embla-carousel-react": "^8.0.0",
+    "google-auth-library": "^11.1.0",
     "next": ">=15",
     "payload": "^3.85.1",
     "react": ">=19",
@@ -111,6 +119,9 @@
       "optional": true
     },
     "embla-carousel-react": {
+      "optional": true
+    },
+    "google-auth-library": {
       "optional": true
     },
     "react-icons": {
@@ -139,6 +150,7 @@
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-prettier": "^5.5.5",
     "eslint-plugin-react-hooks": "^5.2.0",
+    "google-auth-library": "^11.1.0",
     "next": "^16.2.6",
     "payload": "3.88.0",
     "prettier": "^3.8.1",

@@ -5,6 +5,7 @@ Shared CMS, SEO, i18n, utils, UI, and analytics primitives for WDK / QVAC / PEAR
 | Import | Contents |
 | --- | --- |
 | `@tetherto/dev-websites-core/cms` | Payload `buildCmsConfig`, stock collections, access, Lexical, media I/O |
+| `@tetherto/dev-websites-core/cms/google-oauth` | Google admin login handlers (`google-auth-library` peer) |
 | `@tetherto/dev-websites-core/seo` | `createMetadataFactory`, `getSiteUrl`, `getOgBackgroundDataUrl` |
 | `@tetherto/dev-websites-core/i18n` | `Languages` / `LanguageLabel` |
 | `@tetherto/dev-websites-core/utils` | `createLogger`, `toPlainValue`, `stripShikiPreBackground` |
@@ -16,6 +17,7 @@ Shared CMS, SEO, i18n, utils, UI, and analytics primitives for WDK / QVAC / PEAR
 | `@tetherto/dev-websites-core/ui/theme/tokens.css` | CSS variables (HSL channels) |
 | `@tetherto/dev-websites-core/ui/theme/preset.css` | Tailwind v4 `@theme` map |
 | `@tetherto/dev-websites-core/ui/theme/preset` | JS Tailwind preset for `tailwind.config.ts` |
+| `@tetherto/dev-websites-core/ui/google-oauth.css` | Payload admin styles for the Google login button |
 
 ### Install
 
@@ -50,6 +52,46 @@ rm -rf node_modules/@tetherto/dev-websites-core && npm install @tetherto/dev-web
 
 Do **not** import `@tetherto/dev-websites-core/cms` from Client Components — it includes Node-only
 modules (`fs`, Payload, S3). Prefer domain subpaths over the root barrel.
+
+### Google admin login
+
+Stock `users` includes `googleId` / `name` / `picture`. Sites add Next.js routes and
+Payload `afterLogin` (optional `google-auth-library` peer):
+
+```ts
+// src/payload.config.ts
+import { GOOGLE_OAUTH_AFTER_LOGIN } from '@tetherto/dev-websites-core/cms/google-oauth'
+
+admin: {
+  components: { afterLogin: [...GOOGLE_OAUTH_AFTER_LOGIN] },
+}
+```
+
+```ts
+// src/app/api/auth/google/route.ts
+export { handleGoogleOAuthStart as GET } from '@tetherto/dev-websites-core/cms/google-oauth'
+```
+
+```ts
+// src/app/api/auth/google/callback/route.ts
+import { handleGoogleOAuthCallback } from '@tetherto/dev-websites-core/cms/google-oauth'
+import config from '@payload-config'
+
+import type { NextRequest } from 'next/server'
+
+export function GET(request: NextRequest) {
+  return handleGoogleOAuthCallback(request, { config })
+}
+```
+
+```css
+/* src/app/(payload)/custom.css */
+@import '@tetherto/dev-websites-core/ui/google-oauth.css';
+```
+
+Env: `GOOGLE_OAUTH_CLIENT_ID`, `GOOGLE_OAUTH_CLIENT_SECRET`. Redirect URI:
+`{NEXT_PUBLIC_SITE_URL}/api/auth/google/callback`. Existing `users` emails are
+required — Google login does not create accounts.
 
 ### Analytics
 

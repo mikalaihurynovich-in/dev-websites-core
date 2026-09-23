@@ -7,7 +7,9 @@ export function createUsers(access: AccessHelpers): CollectionConfig {
     admin: {
       useAsTitle: 'email',
     },
-    auth: true,
+    auth: {
+      verify: false,
+    },
     access: {
       read: access.adminOnly,
       create: access.adminOnly,
@@ -15,6 +17,32 @@ export function createUsers(access: AccessHelpers): CollectionConfig {
       delete: access.adminOnly,
       admin: access.adminOnly,
     },
-    fields: [],
+    fields: [
+      {
+        name: 'googleId',
+        type: 'text',
+        unique: true,
+        index: true,
+        admin: {
+          position: 'sidebar',
+          readOnly: true,
+          description: 'Google OAuth user ID',
+        },
+      },
+      {
+        name: 'name',
+        type: 'text',
+        admin: {
+          description: 'Display name from Google',
+        },
+      },
+      {
+        name: 'picture',
+        type: 'text',
+        admin: {
+          description: 'Profile picture URL from Google',
+        },
+      },
+    ],
   }
 }

@@ -40,4 +40,5 @@ export * from './components/PasswordInput/index.js'
 export * from './components/SearchInput/index.js'
 export * from './components/FieldError/index.js'
 export * from './components/CollapsibleSection/index.js'
+export * from './components/GoogleOAuthButton/index.js'
 // Carousel lives on `@tetherto/dev-websites-core/ui/carousel` (optional embla peer).
