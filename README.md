@@ -69,7 +69,14 @@ admin: {
 
 ```ts
 // src/app/api/auth/google/route.ts
-export { handleGoogleOAuthStart as GET } from '@tetherto/dev-websites-core/cms/google-oauth'
+import { handleGoogleOAuthStart } from '@tetherto/dev-websites-core/cms/google-oauth'
+
+export function GET() {
+  return handleGoogleOAuthStart({
+    clientId: process.env.GOOGLE_OAUTH_CLIENT_ID ?? '',
+    clientSecret: process.env.GOOGLE_OAUTH_CLIENT_SECRET ?? '',
+  })
+}
 ```
 
 ```ts
@@ -80,7 +87,11 @@ import config from '@payload-config'
 import type { NextRequest } from 'next/server'
 
 export function GET(request: NextRequest) {
-  return handleGoogleOAuthCallback(request, { config })
+  return handleGoogleOAuthCallback(request, {
+    config,
+    clientId: process.env.GOOGLE_OAUTH_CLIENT_ID ?? '',
+    clientSecret: process.env.GOOGLE_OAUTH_CLIENT_SECRET ?? '',
+  })
 }
 ```
 
@@ -102,7 +113,8 @@ Apps using Next.js should also transpile the package so the Payload button share
 transpilePackages: ['@tetherto/dev-websites-core']
 ```
 
-Env: `GOOGLE_OAUTH_CLIENT_ID`, `GOOGLE_OAUTH_CLIENT_SECRET`. Redirect URI:
+The app passes `clientId` and `clientSecret` into both handlers (usually from its own
+`GOOGLE_OAUTH_CLIENT_ID` and `GOOGLE_OAUTH_CLIENT_SECRET`). Redirect URI:
 `{NEXT_PUBLIC_SITE_URL}/api/auth/google/callback`. Existing `users` emails are
 required — Google login does not create accounts.
 

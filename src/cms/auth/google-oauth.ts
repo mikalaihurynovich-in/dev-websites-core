@@ -21,15 +21,20 @@ export const GOOGLE_OAUTH_AFTER_LOGIN = [
 
 const GOOGLE_OAUTH_SCOPES = ['openid', 'email', 'profile'] as const
 
-export type HandleGoogleOAuthCallbackOptions = {
+export type GoogleOAuthClientConfig = {
+  clientId: string
+  clientSecret: string
+}
+
+export type HandleGoogleOAuthCallbackOptions = GoogleOAuthClientConfig & {
   /** Site Payload config default export (`import config from '@payload-config'`). */
   config: Config | SanitizedConfig | Promise<Config | SanitizedConfig>
 }
 
-function getGoogleOAuthClient(redirectUri: string) {
-  const clientId = process.env.GOOGLE_OAUTH_CLIENT_ID
-  const clientSecret = process.env.GOOGLE_OAUTH_CLIENT_SECRET
-
+function getGoogleOAuthClient(
+  redirectUri: string,
+  { clientId, clientSecret }: GoogleOAuthClientConfig
+) {
   if (!clientId || !clientSecret) {
     throw new Error('Google OAuth credentials not configured')
   }
@@ -44,11 +49,11 @@ function loginErrorRedirect(siteUrl: string, error: string) {
 }
 
 /** GET `/api/auth/google` — start the Google OAuth redirect. */
-export async function handleGoogleOAuthStart() {
+export async function handleGoogleOAuthStart(clientConfig: GoogleOAuthClientConfig) {
   try {
     const siteUrl = getSiteUrl()
     const redirectUri = `${siteUrl}${GOOGLE_OAUTH_CALLBACK_PATH}`
-    const client = getGoogleOAuthClient(redirectUri)
+    const client = getGoogleOAuthClient(redirectUri, clientConfig)
 
     const authorizeUrl = client.generateAuthUrl({
       access_type: 'offline',
@@ -66,7 +71,7 @@ export async function handleGoogleOAuthStart() {
 /** GET `/api/auth/google/callback` — exchange the code and set the Payload session cookie. */
 export async function handleGoogleOAuthCallback(
   request: NextRequest,
-  { config }: HandleGoogleOAuthCallbackOptions
+  { config, ...clientConfig }: HandleGoogleOAuthCallbackOptions
 ) {
   try {
     const { searchParams } = new URL(request.url)
@@ -83,7 +88,7 @@ export async function handleGoogleOAuthCallback(
     }
 
     const redirectUri = `${siteUrl}${GOOGLE_OAUTH_CALLBACK_PATH}`
-    const client = getGoogleOAuthClient(redirectUri)
+    const client = getGoogleOAuthClient(redirectUri, clientConfig)
 
     const { tokens } = await client.getToken(code)
     client.setCredentials(tokens)
@@ -94,7 +99,7 @@ export async function handleGoogleOAuthCallback(
 
     const ticket = await client.verifyIdToken({
       idToken: tokens.id_token,
-      audience: process.env.GOOGLE_OAUTH_CLIENT_ID!,
+      audience: clientConfig.clientId,
     })
 
     const googlePayload = ticket.getPayload()
