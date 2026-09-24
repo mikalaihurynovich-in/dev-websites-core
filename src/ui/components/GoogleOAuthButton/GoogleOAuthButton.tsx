@@ -1,9 +1,11 @@
 'use client'
 
-import { useSearchParams } from 'next/navigation.js'
+import { useSearchParams } from 'next/navigation'
 import { useEffect } from 'react'
 
 import { Button } from '../Button/Button.js'
+
+import { GOOGLE_OAUTH_START_PATH } from './googleOAuthStartPath.js'
 
 export function GoogleOAuthButton() {
   const searchParams = useSearchParams()
@@ -17,7 +19,7 @@ export function GoogleOAuthButton() {
   }, [searchParams])
 
   const handleGoogleLogin = () => {
-    window.location.href = '/api/auth/google'
+    window.location.href = GOOGLE_OAUTH_START_PATH
   }
 
   return (

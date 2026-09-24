@@ -10,17 +10,16 @@ import type { Config, SanitizedConfig } from 'payload'
 
 const log = createLogger('googleOAuth')
 
-export const GOOGLE_OAUTH_START_PATH = '/api/auth/google'
-export const GOOGLE_OAUTH_CALLBACK_PATH = '/api/auth/google/callback'
-export const GOOGLE_OAUTH_LOGIN_PATH = '/admin/login'
-export const GOOGLE_OAUTH_ADMIN_PATH = '/admin'
+const GOOGLE_OAUTH_CALLBACK_PATH = '/api/auth/google/callback'
+const GOOGLE_OAUTH_LOGIN_PATH = '/admin/login'
+const GOOGLE_OAUTH_ADMIN_PATH = '/admin'
 
 /** Payload `admin.components.afterLogin` path for the shared Google button. */
 export const GOOGLE_OAUTH_AFTER_LOGIN = [
   '@tetherto/dev-websites-core/ui/google-oauth#GoogleOAuthButton',
 ] as const
 
-export const GOOGLE_OAUTH_SCOPES = ['openid', 'email', 'profile'] as const
+const GOOGLE_OAUTH_SCOPES = ['openid', 'email', 'profile'] as const
 
 export type HandleGoogleOAuthCallbackOptions = {
   /** Site Payload config default export (`import config from '@payload-config'`). */
